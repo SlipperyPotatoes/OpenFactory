@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="48" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="18">
+ <tileset firstgid="1" name="GrassSet" tilewidth="32" tileheight="32" tilecount="24" columns="6">
+  <image source="tilesetDebug.png" width="192" height="128"/>
+ </tileset>
+ <layer id="1" name="Tile Layer 1" width="48" height="24">
+  <data encoding="base64" compression="zlib">
+   eJztwzEJAAAMA7De9S+4DvYPEkgCAAAAwKXPD8nAAeE=
+  </data>
+ </layer>
+ <objectgroup id="2" name="collision-layer">
+  <object id="3" x="0" y="736" width="1536" height="32"/>
+  <object id="15" x="576" y="640" width="96" height="96">
+   <ellipse/>
+  </object>
+  <object id="16" x="928" y="672">
+   <polygon points="0,0 160,-160 224,0 96,0"/>
+  </object>
+  <object id="17" x="576" y="160">
+   <polygon points="0,0 32,288 480,288 416,-32"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="interaction-layer">
+  <object id="9" name="spawn" x="800" y="672">
+   <point/>
+  </object>
+ </objectgroup>
+</map>

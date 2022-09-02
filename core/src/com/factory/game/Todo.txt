@@ -1,0 +1,13 @@
+Redesign player item dropping code to make logistic building receive item if it can accept
+I really need to write the item, building and inventory systems soon cause this shit is abstract and too theoretical without em
+
+
+
+
+
+
+
+
+
+> Refactor conveyor belt code to implement canAccept, pushItem & receiveItem
+> Refactor BeltChain code to separate the checking if an item can be added and actually adding the item into different functions
