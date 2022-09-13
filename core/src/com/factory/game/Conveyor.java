@@ -12,4 +12,9 @@ abstract public class Conveyor extends LogisticBuilding implements Directional{
 
     @Override
     public FACING getDirectionFacing() { return directionFacing; }
+
+    @Override
+    public void setDirectionFacing(FACING newDirectionFacing) {
+        directionFacing = newDirectionFacing;
+    }
 }

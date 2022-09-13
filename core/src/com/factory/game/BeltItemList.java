@@ -85,6 +85,10 @@ public class BeltItemList {
         }
 
         int nextItemIndex = binarySearch(beltIndex - itemSize);
+        if(nextItemIndex == itemDistanceList.size()) {
+            return true;
+        }
+
         if(itemDistanceList.get(nextItemIndex) < beltIndex + itemSize) {
             return false;
         }

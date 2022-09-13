@@ -91,35 +91,9 @@ public class Player extends Entity{
 
     private void handlePlacementLogic(Vector2 touchBuildCords) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
-          switch (buildFacing) {
-              case NORTH:
-                  buildFacing = FACING.WEST;
-                  break;
-              case EAST:
-                  buildFacing = FACING.NORTH;
-                  break;
-              case SOUTH:
-                  buildFacing = FACING.EAST;
-                  break;
-              case WEST:
-                  buildFacing = FACING.SOUTH;
-                  break;
-          }
+            buildFacing = buildFacing.rotate(270);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            switch (buildFacing) {
-                case NORTH:
-                    buildFacing = FACING.EAST;
-                    break;
-                case EAST:
-                    buildFacing = FACING.SOUTH;
-                    break;
-                case SOUTH:
-                    buildFacing = FACING.WEST;
-                    break;
-                case WEST:
-                    buildFacing = FACING.NORTH;
-                    break;
-            }
+            buildFacing = buildFacing.rotate(90);
         }
 
         if (!itemHeld || !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
@@ -145,14 +119,10 @@ public class Player extends Entity{
                     new Building(touchBuildCords,itemDimensions.x,itemDimensions.y,false);
                 }
             }
-            Body overlapBody = getCenterOverlap(touchBuildCords.x+0.5F,touchBuildCords.y+0.5F);
-            if (overlapBody != null) {
-                if (ConveyorBelt.class.isAssignableFrom(overlapBody.getUserData().getClass())) {
-                    ConveyorBelt conveyorBelt = (ConveyorBelt) overlapBody.getUserData();
-                    if (conveyorBelt.directionFacing != buildFacing) {
-                        conveyorBelt.setDirectionFacing(buildFacing);
-                    }
-                }
+            Directional overlapEntity = (Directional) getIfFrom(Directional.class,
+                    touchBuildCords.x+0.5F,touchBuildCords.y+0.5F);
+            if (overlapEntity != null) {
+                overlapEntity.setDirectionFacing(buildFacing);
             }
         }
     }

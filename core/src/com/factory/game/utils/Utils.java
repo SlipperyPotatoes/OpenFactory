@@ -158,30 +158,29 @@ public class Utils {
     }
 
 
-    public static Object getIfFrom(Class<?> assignedClass, float x, float y) {
+    public static Entity getIfFrom(Class<?> assignedClass, float x, float y) {
         final Class<?> aClass = assignedClass; //anon methods cannot accept non-final params,
         //so a final copy of the assigned class must be made
-        final Object[] obj = new Object[1];
+        final Entity[] entity = new Entity[1];
         FactoryGame.world.QueryAABB(new QueryCallback() {
             @Override
             public boolean reportFixture(Fixture fixture) {
-                obj[0] = ifAssignableFrom(aClass, fixture);
+                entity[0] = ifAssignableFrom(aClass, fixture);
                 return false;
             }
         },x,y,x,y);
 
-        return obj[0];
+        return entity[0];
     }
 
 
     //if the fixture at least inherits the class param, then it will return it
-    private static Object ifAssignableFrom(Class<?> assignedClass, Fixture fixture) {
+    private static Entity ifAssignableFrom(Class<?> assignedClass, Fixture fixture) {
         if(fixture.getBody() == null) return null;
         Entity entity = (Entity) fixture.getBody().getUserData();
         if(entity.isDead()) return null;
         if(!assignedClass.isAssignableFrom(entity.getClass())) return null;
-        return entity; //entity needs to be cast regardless due to being an object, therefore
-        // there is no need for casting here
+        return entity; //what this method returns should still be cast to the assignedClass type
     }
 
     public static ChainableBuilding getIfChainable(float x, float y) {

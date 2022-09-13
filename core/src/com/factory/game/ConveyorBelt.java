@@ -158,7 +158,7 @@ public class ConveyorBelt extends Conveyor {
 
     @Override
     public void setDirectionFacing(FACING newDirectionFacing) {
-        directionFacing = newDirectionFacing;
+        super.setDirectionFacing(newDirectionFacing);
         if(index != 0) {
             beltChain.sliceChain(index-1,index);
         }
