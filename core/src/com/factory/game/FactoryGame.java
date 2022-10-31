@@ -148,6 +148,7 @@ public class FactoryGame extends ApplicationAdapter {
 		drawGrid();
 		shapeRenderer.end();
 
+		spriteBatch.enableBlending();
 		spriteBatch.begin();
 		drawSprites();
 		spriteBatch.end();

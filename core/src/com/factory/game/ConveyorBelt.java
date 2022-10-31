@@ -23,7 +23,7 @@ public class ConveyorBelt extends Conveyor {
         this.alt = alt;
         this.connectedTo = null;
 
-        indexSurroundingBelts();
+        indexSurroundingBelts(0);
     }
 
     @Override
@@ -31,64 +31,75 @@ public class ConveyorBelt extends Conveyor {
 
     }
 
-    public void indexSurroundingBelts() {
-        List<ConveyorBelt> cardinalBelts = new ArrayList<>();
-        cardinalBelts.add((ConveyorBelt) Utils.getIfFrom(ConveyorBelt.class, getPosition().x, getPosition().y+1));
-        cardinalBelts.add((ConveyorBelt) Utils.getIfFrom(ConveyorBelt.class, getPosition().x+1, getPosition().y));
-        cardinalBelts.add((ConveyorBelt) Utils.getIfFrom(ConveyorBelt.class, getPosition().x, getPosition().y-1));
-        cardinalBelts.add((ConveyorBelt) Utils.getIfFrom(ConveyorBelt.class, getPosition().x-1, getPosition().y));
+    public void indexSurroundingBelts(int depth) {
+        List<ConveyorBelt> surroundingBelts = new ArrayList<>();
+        //starts by getting the belts in order of N,E,S,W
+        surroundingBelts.add((ConveyorBelt) Utils.getIfFrom(ConveyorBelt.class, getPosition().x, getPosition().y + 1));
+        surroundingBelts.add((ConveyorBelt) Utils.getIfFrom(ConveyorBelt.class, getPosition().x + 1, getPosition().y));
+        surroundingBelts.add((ConveyorBelt) Utils.getIfFrom(ConveyorBelt.class, getPosition().x, getPosition().y - 1));
+        surroundingBelts.add((ConveyorBelt) Utils.getIfFrom(ConveyorBelt.class, getPosition().x - 1, getPosition().y));
 
         //rotates the list so that its order is front, right, back, left
-        Collections.rotate(cardinalBelts,-directionFacing.getDegrees()/90);
+        Collections.rotate(surroundingBelts, -directionFacing.getDegrees() / 90);
 
-        ConveyorBelt frontBelt = cardinalBelts.get(0);
-        ConveyorBelt rightBelt = cardinalBelts.get(1);
-        ConveyorBelt backBelt = cardinalBelts.get(2);
-        ConveyorBelt leftBelt = cardinalBelts.get(3);
+        ConveyorBelt frontBelt = surroundingBelts.get(0);
+        ConveyorBelt rightBelt = surroundingBelts.get(1);
+        ConveyorBelt backBelt = surroundingBelts.get(2);
+        ConveyorBelt leftBelt = surroundingBelts.get(3);
 
-        if(frontBelt!=null) {
+        if(frontBelt != null) {
             if(frontBelt.directionFacing == directionFacing.rotate(180)) {
                 frontBelt = null;
             }
         }
-        if(rightBelt!=null) {
+        if(rightBelt != null) {
             if(rightBelt.directionFacing != directionFacing.rotate(270)) {
                 rightBelt = null;
             }
         }
-        if(backBelt!=null) {
+        if(backBelt != null) {
             if(backBelt.directionFacing != directionFacing) {
                 backBelt = null;
-            } else {
+            } else if(connectedTo == directionFacing.rotate(180)) {
+                backBelt = null;
+            } else{
                 connectedTo = directionFacing.rotate(180);
             }
         }
-        if(leftBelt!=null) {
+        if(leftBelt != null) {
             if(leftBelt.directionFacing != directionFacing.rotate(90)) {
                 leftBelt = null;
             }
         }
 
-        if(backBelt!=null) {
+        if(backBelt != null) {
             backBelt.beltChain.addBeltToFront(this);
-        } else if (leftBelt!=null && rightBelt==null) {
+        } else if(leftBelt != null && rightBelt == null) {
             leftBelt.beltChain.addBeltToFront(this);
             connectedTo = directionFacing.rotate(270);
-        } else if (rightBelt!=null && leftBelt==null) {
+        } else if(rightBelt != null && leftBelt == null) {
             rightBelt.beltChain.addBeltToFront(this);
             connectedTo = directionFacing.rotate(90);
         }
 
-        if(frontBelt!=null) {
-            if (frontBelt.directionFacing == this.directionFacing) {
+        if(frontBelt != null) {
+            if(frontBelt.directionFacing == this.directionFacing) {
                 frontBelt.beltChain.addBeltToBack(this);
-            } else if (frontBelt.beltChain.getLength() - 1 == frontBelt.index) { //if frontBelt is the end belt
+            } else if(frontBelt.beltChain.getLength() - 1 == frontBelt.index) { //if frontBelt is the end belt
                 frontBelt.beltChain.addBeltToBack(this);
             }
         }
 
-        if(beltChain==null) {
+        if(beltChain == null) {
             beltChain = new BeltChain(this);
+        }
+
+        if(depth != 0) {
+            for(ConveyorBelt belt : surroundingBelts) {
+                if(belt != null) {
+                    belt.indexSurroundingBelts(depth - 1);
+                }
+            }
         }
     }
 
@@ -110,13 +121,13 @@ public class ConveyorBelt extends Conveyor {
 
     @Override
     public void receiveItem(short itemId) {
-        beltChain.addItem(itemId,this);
+        beltChain.addItem(itemId, this);
     }
 
     @Override
     public void draw(SpriteBatch batch) {
         float rotation = 0;
-        switch (directionFacing) {
+        switch(directionFacing) {
             case WEST:
                 rotation = 0;
                 break;
@@ -131,7 +142,7 @@ public class ConveyorBelt extends Conveyor {
                 break;
         }
         if(alt) {
-            batch.draw(altConveyorBelt,getPosition().x-0.5F,getPosition().y-0.5F,0.5F,0.5F,1F,1F,1F,1F,rotation);
+            batch.draw(altConveyorBelt, getPosition().x - 0.5F, getPosition().y - 0.5F, 0.5F, 0.5F, 1F, 1F, 1F, 1F, rotation);
         } else {
             batch.draw(conveyorBelt, getPosition().x - 0.5F, getPosition().y - 0.5F, 0.5F, 0.5F, 1F, 1F, 1F, 1F, rotation);
         }
@@ -140,16 +151,16 @@ public class ConveyorBelt extends Conveyor {
     @Override
     public void destroy() {
         super.destroy();
-        if(beltChain.getLength() >= 3 && index != 0 && index != beltChain.getLength()-1) { //if not on the ends of a >=3 len belt
+        if(beltChain.getLength() >= 3 && index != 0 && index != beltChain.getLength() - 1) { //if not on the ends of a >=3 len belt
             beltChain.splitChain(index);
-        } else if (beltChain.getLength() == 1) {
+        } else if(beltChain.getLength() == 1) {
             beltChain.setAsDeprecated();
             //TODO: Add items leftover into player's inventory
         } else { //if on the ends of a belt w a len of >1
-            if(index==0) {
+            if(index == 0) {
                 beltChain.sliceChain(0, 1);
             } else {
-                beltChain.sliceChain(index-1, index);
+                beltChain.sliceChain(index - 1, index);
             }
             beltChain.setAsDeprecated();
             //TODO: Add items leftover into player's inventory
@@ -160,13 +171,17 @@ public class ConveyorBelt extends Conveyor {
     public void setDirectionFacing(FACING newDirectionFacing) {
         super.setDirectionFacing(newDirectionFacing);
         if(index != 0) {
-            beltChain.sliceChain(index-1,index);
+            beltChain.sliceChain(index - 1, index);
         }
-        indexSurroundingBelts();
+        indexSurroundingBelts(0);
     }
 
     @Override
-    public FACING getDirectionFacing() { return directionFacing; }
+    public FACING getDirectionFacing() {
+        return directionFacing;
+    }
 
-    public FACING getConnectedTo() { return connectedTo; }
+    public FACING getConnectedTo() {
+        return connectedTo;
+    }
 }

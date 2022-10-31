@@ -186,7 +186,6 @@ public class Player extends Entity{
                 batch.draw(greenBox, touchBuildCords.x + 0.5F - itemDimensions.x / 2F, touchBuildCords.y + 0.5F - itemDimensions.y / 2F, itemDimensions.x, itemDimensions.y);
             }
         }
-
     }
 
     @Override
